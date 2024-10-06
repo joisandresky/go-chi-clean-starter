@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-playground/validator/v10"
 
 	"github.com/joisandresky/go-chi-clean-starter/internal/application/dto"
 	"github.com/joisandresky/go-chi-clean-starter/internal/application/usecases"
@@ -63,19 +62,8 @@ func (api *postHttpApi) CreatePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
-		if err, ok := err.(validator.ValidationErrors); ok {
-			guy.BadRequest(
-				w,
-				r,
-				"validation errors",
-				guy.ExtractValidationErrs(err),
-			)
-			return
-		}
-
-		guy.BadRequest(w, r, "failed to validate request body", err)
+	if err := guy.Validate(req); err != nil {
+		guy.BadRequest(w, r, "Validation errors", err)
 		return
 	}
 
@@ -95,19 +83,8 @@ func (api *postHttpApi) UpdatePostByid(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	validate := validator.New()
-	if err := validate.Struct(req); err != nil {
-		if err, ok := err.(validator.ValidationErrors); ok {
-			guy.BadRequest(
-				w,
-				r,
-				"validation errors",
-				guy.ExtractValidationErrs(err),
-			)
-			return
-		}
-
-		guy.BadRequest(w, r, "failed to validate request body", err)
+	if err := guy.Validate(req); err != nil {
+		guy.BadRequest(w, r, "Validation errors", err)
 		return
 	}
 

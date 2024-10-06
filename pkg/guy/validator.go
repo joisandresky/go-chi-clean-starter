@@ -15,3 +15,17 @@ func ExtractValidationErrs(errs validator.ValidationErrors) error {
 	}
 	return errors.New(strings.Join(fields, ", "))
 }
+
+func Validate[T any](req T) error {
+	validate := validator.New()
+	err := validate.Struct(req)
+	if err != nil {
+		if err, ok := err.(validator.ValidationErrors); ok {
+			return ExtractValidationErrs(err)
+		}
+
+		return err
+	}
+
+	return nil
+}
