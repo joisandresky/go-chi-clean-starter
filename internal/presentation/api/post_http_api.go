@@ -8,11 +8,12 @@ import (
 
 	"github.com/joisandresky/go-chi-clean-starter/internal/application/dto"
 	"github.com/joisandresky/go-chi-clean-starter/internal/application/usecases"
+	"github.com/joisandresky/go-chi-clean-starter/internal/presentation/middleware"
 	"github.com/joisandresky/go-chi-clean-starter/pkg/guy"
 )
 
 type PostHttpApi interface {
-	RegisterRoutes(r *chi.Mux)
+	RegisterRoutes(r *chi.Mux, testMw middleware.TestMiddleware)
 }
 
 type postHttpApi struct {
@@ -23,8 +24,11 @@ func NewPostHttpApi(uc usecases.PostUsecase) PostHttpApi {
 	return &postHttpApi{uc: uc}
 }
 
-func (api *postHttpApi) RegisterRoutes(r *chi.Mux) {
+func (api *postHttpApi) RegisterRoutes(r *chi.Mux, testMw middleware.TestMiddleware) {
 	r.Route("/api/v1/posts", func(r chi.Router) {
+		// use middleware
+		r.Use(testMw.TestMiddleware)
+
 		r.Get("/", api.GetAll)
 		r.Get("/{id}", api.GetById)
 		r.Post("/", api.CreatePost)

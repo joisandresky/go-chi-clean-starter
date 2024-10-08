@@ -10,6 +10,7 @@ import (
 	"github.com/joisandresky/go-chi-clean-starter/internal/infra/configs"
 	"github.com/joisandresky/go-chi-clean-starter/internal/infra/repositories"
 	"github.com/joisandresky/go-chi-clean-starter/internal/presentation/api"
+	"github.com/joisandresky/go-chi-clean-starter/internal/presentation/middleware"
 )
 
 func Inject(
@@ -27,6 +28,9 @@ func Inject(
 	// usecases
 	postUc := usecases.NewPostUsecase(postRepo)
 
+	// middlewares
+	testMw := middleware.NewTestMiddleware(logger)
+
 	// Routes Registration
-	api.NewPostHttpApi(postUc).RegisterRoutes(r)
+	api.NewPostHttpApi(postUc).RegisterRoutes(r, testMw)
 }
