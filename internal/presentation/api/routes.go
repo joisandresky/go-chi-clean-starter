@@ -6,9 +6,14 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
+
+	mw "github.com/joisandresky/go-chi-clean-starter/internal/presentation/middleware"
 )
 
-func SetupRoutes() *chi.Mux {
+func SetupRoutes(
+	testMw mw.TestMiddleware,
+	postHttpApi PostHttpApi,
+) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Use(middleware.RequestID)
@@ -23,6 +28,9 @@ func SetupRoutes() *chi.Mux {
 	r.Get("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("OK"))
 	})
+
+	// all routes registration
+	postHttpApi.RegisterRoutes(r, testMw)
 
 	return r
 }

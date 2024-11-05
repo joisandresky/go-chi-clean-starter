@@ -1,9 +1,12 @@
 postgresconn=postgres://postgres:@localhost:5432/go_chi_starter?sslmode=disable
 
-.PHONY: migration-status migrate unmigrate migration migrate-force live run
+.PHONY: migration-status migrate unmigrate migration migrate-force live run wire
 
 run:
 	go run ./cmd/main.go
+
+wire:
+	wire ./internal/infra
 
 # live command is using Nodemon, so make sure you have nodemon installed
 # either way you can use golang air, and just run with "air"

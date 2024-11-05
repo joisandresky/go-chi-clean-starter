@@ -35,3 +35,18 @@ and dont forget to change `postgresconn` value with your database url.
 ## To use as Project Starter
 
 just please Find and replace `github.com/joisandresky/go-chi-clean-starter` with your project name (go modules).
+
+## Dependency Injection
+
+(Update 5 November 2024) Now we are using [https://github.com/google/wire](https://github.com/google/wire) for Dependency Injection.
+please check this file:
+
+- [./internal/infra/wire.go](./internal/infra/wire.go)
+- [./internal/infra/provider.go](./internal/infra/provider.go)
+- [./internal/infra/sets.go](./internal/infra/sets.go)
+
+Run this to generate the wire.go file:
+
+```bash
+make wire
+```

@@ -9,13 +9,12 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 
-	"github.com/joisandresky/go-chi-clean-starter/internal/application"
 	"github.com/joisandresky/go-chi-clean-starter/internal/infra/configs"
-	"github.com/joisandresky/go-chi-clean-starter/internal/presentation/api"
 )
 
 type ServerBuilder struct {
@@ -23,6 +22,7 @@ type ServerBuilder struct {
 	logger      *zap.SugaredLogger
 	gormdb      *gorm.DB
 	redisClient *redis.Client
+	routers     *chi.Mux
 }
 
 func NewServer(
@@ -30,23 +30,21 @@ func NewServer(
 	logger *zap.SugaredLogger,
 	gormdb *gorm.DB,
 	redisClient *redis.Client,
+	routers *chi.Mux,
 ) *ServerBuilder {
 	return &ServerBuilder{
 		cfg:         cfg,
 		logger:      logger,
 		gormdb:      gormdb,
 		redisClient: redisClient,
+		routers:     routers,
 	}
 }
 
 func (srv *ServerBuilder) Run() {
-	routers := api.SetupRoutes()
-
-	application.Inject(routers, srv.cfg, srv.logger, srv.gormdb, srv.redisClient)
-
 	server := &http.Server{
 		Addr:    fmt.Sprintf(":%s", srv.cfg.App.Port),
-		Handler: routers,
+		Handler: srv.routers,
 	}
 
 	serverCtx, serverStopCtx := context.WithCancel(context.Background())
